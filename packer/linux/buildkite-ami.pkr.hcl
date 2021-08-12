@@ -19,7 +19,7 @@ variable "instance_type" {
 
 variable "region" {
   type    = string
-  default = "us-east-1"
+  default = "us-west-1"
 }
 
 variable "build_number" {
@@ -124,6 +124,14 @@ build {
   }
 
   provisioner "shell" {
+    script = "scripts/install-packform.sh"
+  }
+
+  provisioner "shell" {
     script = "scripts/cleanup.sh"
+  }
+
+  provisioner "shell" {
+    inline = ["rm /home/ec2-user/.ssh/authorized_keys"]
   }
 }
