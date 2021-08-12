@@ -19,7 +19,7 @@ variable "instance_type" {
 
 variable "region" {
   type    = string
-  default = "us-east-1"
+  default = "us-west-1"
 }
 
 variable "build_number" {
@@ -50,7 +50,6 @@ data "amazon-ami" "al2023" {
 
 source "amazon-ebs" "elastic-ci-stack-ami" {
   ami_description = "Buildkite Elastic Stack (Amazon Linux 2023 w/ docker)"
-  ami_groups      = ["all"]
   ami_name        = "buildkite-stack-linux-${var.arch}-${replace(timestamp(), ":", "-")}"
   instance_type   = var.instance_type
   region          = var.region
@@ -104,6 +103,10 @@ build {
 
   provisioner "shell" {
     script = "scripts/install-buildkite-utils.sh"
+  }
+
+  provisioner "shell" {
+    script = "scripts/install-packform.sh"
   }
 
   provisioner "shell" {
