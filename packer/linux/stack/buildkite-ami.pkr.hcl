@@ -25,7 +25,7 @@ variable "instance_type" {
 
 variable "region" {
   type    = string
-  default = "us-east-1"
+  default = "us-west-1"
 }
 
 variable "build_number" {
@@ -179,6 +179,12 @@ build {
   provisioner "shell" {
     environment_vars = ["OS_DISTRO=${var.os_distro}"]
     script           = "scripts/install-buildkite-utils.sh"
+    remote_folder    = "/var/tmp"
+  }
+
+  provisioner "shell" {
+    environment_vars = ["OS_DISTRO=${var.os_distro}"]
+    script           = "scripts/install-packform.sh"
     remote_folder    = "/var/tmp"
   }
 
