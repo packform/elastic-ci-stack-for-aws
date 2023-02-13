@@ -124,6 +124,10 @@ build {
   }
 
   provisioner "shell" {
+    script = "scripts/upgrade-python.sh"
+  }
+
+  provisioner "shell" {
     script = "scripts/install-packform.sh"
   }
 
