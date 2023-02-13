@@ -184,6 +184,12 @@ build {
 
   provisioner "shell" {
     environment_vars = ["OS_DISTRO=${var.os_distro}"]
+    script           = "scripts/upgrade-python.sh"
+    remote_folder    = "/var/tmp"
+  }
+
+  provisioner "shell" {
+    environment_vars = ["OS_DISTRO=${var.os_distro}"]
     script           = "scripts/install-packform.sh"
     remote_folder    = "/var/tmp"
   }
