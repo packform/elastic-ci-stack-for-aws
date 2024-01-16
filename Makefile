@@ -12,9 +12,7 @@ FIXPERMS_FILES = go.mod go.sum $(exec find internal/fixperms)
 
 AWS_REGION ?= us-west-1
 
-ARM64_INSTANCE_TYPE ?= m7g.xlarge
-AMD64_INSTANCE_TYPE ?= m7a.xlarge
-WIN64_INSTANCE_TYPE ?= m7i.xlarge
+AMD64_INSTANCE_TYPE ?= m6a.xlarge
 
 BUILDKITE_BUILD_NUMBER ?= none
 BUILDKITE_PIPELINE_DEFAULT_BRANCH ?= main
@@ -111,17 +109,6 @@ build/fix-perms-linux-amd64: $(FIXPERMS_FILES)
 		--rm \
 		golang:$(GO_VERSION) \
 			go build -v -buildvcs=false -o "build/fix-perms-linux-amd64" ./internal/fixperms
-
-build/fix-perms-linux-arm64: $(FIXPERMS_FILES)
-	docker run \
-		-e CGO_ENABLED=0 \
-		-e GOOS=linux \
-		-e GOARCH=arm64 \
-		-v "$(PWD):/src" \
-		-w /src \
-		--rm \
-		golang:$(GO_VERSION) \
-			go build -v -buildvcs=false -o "build/fix-perms-linux-arm64" ./internal/fixperms
 
 # -----------------------------------------
 # Cloudformation helpers
