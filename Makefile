@@ -27,7 +27,7 @@ FIXPERMS_FILES = go.mod go.sum $(shell find internal/fixperms)
 
 AWS_REGION ?= us-west-1
 
-AMD64_INSTANCE_TYPE ?= m7a.xlarge
+AMD64_INSTANCE_TYPE ?= m6a.xlarge
 
 BUILDKITE_BUILD_NUMBER ?= none
 BUILDKITE_PIPELINE_DEFAULT_BRANCH ?= main
