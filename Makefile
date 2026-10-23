@@ -27,6 +27,16 @@ FIXPERMS_FILES = go.mod go.sum $(shell find internal/fixperms)
 
 AWS_REGION ?= us-west-1
 
+# Optional network for temporary Packer instances. Empty values use AWS defaults.
+PACKER_VPC_ID ?=
+PACKER_SUBNET_ID ?=
+PACKER_ASSOCIATE_PUBLIC_IP_ADDRESS ?=
+
+PACKER_NETWORK_ARGS = \
+	-var 'vpc_id=$(PACKER_VPC_ID)' \
+	-var 'subnet_id=$(PACKER_SUBNET_ID)' \
+	$(if $(strip $(PACKER_ASSOCIATE_PUBLIC_IP_ADDRESS)),-var 'associate_public_ip_address=$(PACKER_ASSOCIATE_PUBLIC_IP_ADDRESS)')
+
 AMD64_INSTANCE_TYPE ?= m6a.xlarge
 
 BUILDKITE_BUILD_NUMBER ?= none
@@ -115,6 +125,7 @@ packer-linux-amd64.output: $(PACKER_LINUX_STACK_FILES) build/fix-perms-linux-amd
 		--rm \
 		-w /src/packer/linux/stack \
 		hashicorp/packer:full-$(PACKER_VERSION) build -timestamp-ui \
+			$(PACKER_NETWORK_ARGS) \
 			-var 'region=$(AWS_REGION)' \
 			-var 'arch=x86_64' \
 			-var 'instance_type=$(AMD64_INSTANCE_TYPE)' \
@@ -149,6 +160,7 @@ packer-base-linux-amd64.output: $(PACKER_LINUX_BASE_FILES)
 		--rm \
 		-w /src/packer/linux/base \
 		hashicorp/packer:full-$(PACKER_VERSION) build -timestamp-ui \
+			$(PACKER_NETWORK_ARGS) \
 			-var 'region=$(AWS_REGION)' \
 			-var 'arch=x86_64' \
 			-var 'instance_type=$(AMD64_INSTANCE_TYPE)' \
@@ -181,6 +193,7 @@ packer-base-linux-amd64-cis.output: $(PACKER_LINUX_BASE_FILES)
 		--rm \
 		-w /src/packer/linux/base \
 		hashicorp/packer:full-$(PACKER_VERSION) build -timestamp-ui \
+			$(PACKER_NETWORK_ARGS) \
 			-var 'region=$(AWS_REGION)' \
 			-var 'arch=x86_64' \
 			-var 'instance_type=$(AMD64_INSTANCE_TYPE)' \
