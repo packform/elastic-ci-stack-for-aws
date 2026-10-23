@@ -191,7 +191,10 @@ By default, AMIs are built as private. You can control AMI visibility and build 
 
 - `AMI_PUBLIC` - Set to `true` to make AMIs publicly accessible to all AWS users, or `false` (default) for private AMIs.
 - `AMI_USERS` - A comma-separated list of AWS account IDs that should have access to private AMIs (ignored when `AMI_PUBLIC=true`).
-- `AWS_REGION` - The AWS region where AMIs should be built (defaults to `us-east-1`).
+- `AWS_REGION` - The AWS region where AMIs should be built (defaults to `us-west-1`).
+- `PACKER_VPC_ID` - An existing VPC for temporary Linux build instances (defaults to the account's default VPC).
+- `PACKER_SUBNET_ID` - An existing subnet in that VPC and region; required when selecting a non-default VPC.
+- `PACKER_ASSOCIATE_PUBLIC_IP_ADDRESS` - Set to `true` to assign a public IP to temporary build instances, or `false` to disable it. When omitted, the subnet default applies.
 
 ```bash
 # Build private AMIs (default - recommended for security)
@@ -205,9 +208,15 @@ make packer AMI_USERS="123456789012,987654321098,555666777888"
 
 # Combined: private AMIs with specific account access in a different region
 make packer AMI_PUBLIC=false AMI_USERS="123456789012,987654321098" AWS_REGION=us-west-2
+
+# Build in an existing non-default VPC using a public subnet
+make packer AWS_REGION=us-west-2 \
+  PACKER_VPC_ID=vpc-0123456789abcdef0 \
+  PACKER_SUBNET_ID=subnet-0123456789abcdef0 \
+  PACKER_ASSOCIATE_PUBLIC_IP_ADDRESS=true
 ```
 
-This will create AMIs for the following platforms in your account's `us-east-1` region (or the region specified by `AWS_REGION`):
+This will create AMIs for the following platforms in your account's `us-west-1` region (or the region specified by `AWS_REGION`):
 
 - Linux (64-bit x86)
 - Linux (64-bit Arm)
