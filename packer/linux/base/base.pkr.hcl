@@ -28,6 +28,24 @@ variable "region" {
   default = "us-west-1"
 }
 
+variable "vpc_id" {
+  type        = string
+  description = "VPC for the temporary build instance. Empty uses Packer's default VPC selection."
+  default     = ""
+}
+
+variable "subnet_id" {
+  type        = string
+  description = "Subnet for the temporary build instance. Required for a non-default VPC."
+  default     = ""
+}
+
+variable "associate_public_ip_address" {
+  type        = bool
+  description = "Whether to assign a public IP to the build instance. Null preserves the subnet default."
+  default     = null
+}
+
 variable "build_number" {
   type    = string
   default = "none"
@@ -118,6 +136,9 @@ source "amazon-ebs" "buildkite-base-ami" {
   ami_name                                  = "${local.ami_prefix}-${var.arch}-${replace(timestamp(), ":", "-")}"
   instance_type                             = var.instance_type
   region                                    = var.region
+  vpc_id                                    = var.vpc_id
+  subnet_id                                 = var.subnet_id
+  associate_public_ip_address               = var.associate_public_ip_address
   source_ami                                = local.source_ami
   ssh_username                              = local.is_cis ? "ec2-user" : local.ssh_username[var.os_distro]
   ssh_clear_authorized_keys                 = true
